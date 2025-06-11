@@ -1,0 +1,84 @@
+#:import Ellipse kivy.graphics.Ellipse
+#:import Color kivy.graphics.Color
+#:import Line kivy.graphics.Line
+#:import VoiceWave voice_wave.VoiceWave
+
+<HoverButton>:
+    background_normal: ""
+    background_color: 0, 0, 0, 0
+    canvas.before:
+        Color:
+            rgba: 0, 0, 0, 0.25
+        Ellipse:
+            pos: self.x + 3, self.y - 3
+            size: self.width, self.height
+
+        Color:
+            rgba: 0.2, 0.3, 0.7, 1
+        Ellipse:
+            pos: self.pos
+            size: self.size
+
+        Color:
+            rgba: 1, 1, 1, 1
+        Line:
+            circle: (self.center_x, self.center_y, self.width / 2 - 2, 0, 360)
+            width: 2
+
+<VoiceWave>:
+    canvas:
+        Color:
+            rgba: 0.2, 0.3, 0.7, 1, self.opacity
+        Line:
+            points: self.points
+            width: 2
+
+<AsistanEkrani>:
+    FloatLayout:
+        Label:
+            text: "H.A.I.S.O"
+            font_size: 32
+            bold: True
+            color: 0.2, 0.3, 0.7, 1
+            size_hint: None, None
+            size: self.texture_size
+            pos_hint: {"top": 0.95, "center_x": 0.5}
+
+        Label:
+            text: root.kullanici_metni
+            font_size: 24
+            color: 1, 1, 1, 1
+            size_hint: None, None
+            size: self.texture_size
+            pos_hint: {"center_x": 0.5, "center_y": 0.65}
+
+        Label:
+            text: root.cevap
+            font_size: 24
+            color: 1, 1, 1, 1
+            size_hint: None, None
+            size: self.texture_size
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+
+        VoiceWave:
+            id: wave
+            size_hint: None, None
+            size: root.width, 100
+            pos_hint: {"center_x": 0.5}
+            y: root.height * 0.45
+            opacity: 0
+
+
+        HoverButton:
+            id: btn_mic
+            size_hint: None, None
+            size: "125dp", "125dp"
+            pos_hint: {"center_x": 0.5, "center_y": 0.3}
+            on_release: root.baslat_ses_dalgasi_ve_kayit()
+
+            Image:
+                source: "assets/mic.png"
+                size_hint: None, None
+                size: "125dp", "125dp"
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
