@@ -9,9 +9,10 @@ repo_link = "https://github.com/zHM03/haiso.git"
 subprocess.run([git_path, "config", "--global", "user.name", "Adınız Soyadınız"])
 subprocess.run([git_path, "config", "--global", "user.email", "email@example.com"])
 
-# Repo işlemleri
+# Git repo başlat
 subprocess.run([git_path, "init"], cwd=dosya_yolu)
 
+# Remote kontrol et, varsa URL güncelle yoksa ekle
 result = subprocess.run([git_path, "remote"], cwd=dosya_yolu, capture_output=True, text=True)
 remotes = result.stdout.split()
 
@@ -20,18 +21,24 @@ if "origin" in remotes:
 else:
     subprocess.run([git_path, "remote", "add", "origin", repo_link], cwd=dosya_yolu)
 
+# Tüm dosyaları git'e ekle
 subprocess.run([git_path, "add", "."], cwd=dosya_yolu)
 
-# Commit yapmadan önce dosya olup olmadığını kontrol edebilirsin (opsiyonel)
+# Değişiklik var mı kontrol et
+status_result = subprocess.run([git_path, "status", "--porcelain"], cwd=dosya_yolu, capture_output=True, text=True)
 
-commit_result = subprocess.run([git_path, "commit", "-m", "Yükleme"], cwd=dosya_yolu, capture_output=True, text=True)
-print(commit_result.stdout)
-print(commit_result.stderr)
+if status_result.stdout.strip() == "":
+    print("Commit yapılacak değişiklik yok.")
+else:
+    # Commit işlemi
+    commit_result = subprocess.run([git_path, "commit", "-m", "Yükleme"], cwd=dosya_yolu, capture_output=True, text=True)
+    print(commit_result.stdout)
+    print(commit_result.stderr)
 
-# Branch adını değiştir
-subprocess.run([git_path, "branch", "-M", "main"], cwd=dosya_yolu)
+    # Branch adı main olarak ayarla
+    subprocess.run([git_path, "branch", "-M", "main"], cwd=dosya_yolu)
 
-# Push
-push_result = subprocess.run([git_path, "push", "-u", "origin", "main"], cwd=dosya_yolu, capture_output=True, text=True)
-print(push_result.stdout)
-print(push_result.stderr)
+    # Push işlemi
+    push_result = subprocess.run([git_path, "push", "-u", "origin", "main"], cwd=dosya_yolu, capture_output=True, text=True)
+    print(push_result.stdout)
+    print(push_result.stderr)
